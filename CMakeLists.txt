@@ -10,6 +10,7 @@ find_package(glfw3 CONFIG REQUIRED)
 add_executable(GraphicsEngine
     src/main.cpp
     src/Application.cpp
+    src/graphics/Window.cpp
 )
 
 target_link_libraries(GraphicsEngine PRIVATE glfw)
