@@ -16,4 +16,6 @@ public:
 
 private:
     GLFWwindow* m_Window = nullptr;
+
+    void ProcessInput();
 };

@@ -3,6 +3,19 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void Window::ProcessInput()
+{
+    if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(m_Window, true);
+    }
+}
+
 Window::Window()
 {
     // TODO:: implement
@@ -43,6 +56,8 @@ bool Window::Create()
 
     glfwMakeContextCurrent(m_Window);
 
+    glfwSetFramebufferSizeCallback(m_Window, FramebufferSizeCallback);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         return false;
@@ -56,6 +71,8 @@ bool Window::Create()
 
 void Window::Update()
 {
+    ProcessInput();
+
     glClearColor(0.1f, 0.15f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
