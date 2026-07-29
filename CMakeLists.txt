@@ -11,6 +11,14 @@ add_executable(GraphicsEngine
     src/main.cpp
     src/Application.cpp
     src/graphics/Window.cpp
+
+    external/glad/src/glad.c
 )
 
-target_link_libraries(GraphicsEngine PRIVATE glfw)
+target_include_directories(GraphicsEngine PRIVATE
+    external/glad/include
+)
+
+target_link_libraries(GraphicsEngine PRIVATE
+    glfw
+)

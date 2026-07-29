@@ -15,5 +15,5 @@ public:
     bool ShouldClose() const;
 
 private:
-    GLFWwindow* m_window = nullptr;
+    GLFWwindow* m_Window = nullptr;
 };
