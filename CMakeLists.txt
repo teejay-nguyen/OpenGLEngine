@@ -11,6 +11,7 @@ add_executable(GraphicsEngine
     src/main.cpp
     src/Application.cpp
     src/graphics/Window.cpp
+    src/graphics/Renderer.cpp
 
     external/glad/src/glad.c
 )
