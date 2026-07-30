@@ -1,6 +1,6 @@
 #include "Application.h"
-#include "graphics/Window.h"
-#include "graphics/Renderer.h"
+#include "../graphics/Window.h"
+#include "../graphics/Renderer.h"
 
 void Application::Run()
 {

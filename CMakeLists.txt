@@ -9,15 +9,19 @@ find_package(glfw3 CONFIG REQUIRED)
 
 add_executable(GraphicsEngine
     src/main.cpp
-    src/Application.cpp
+
+    src/core/Application.cpp
+
     src/graphics/Window.cpp
     src/graphics/Renderer.cpp
+    src/graphics/Shader.cpp
 
     external/glad/src/glad.c
 )
 
 target_include_directories(GraphicsEngine PRIVATE
     external/glad/include
+    src
 )
 
 target_link_libraries(GraphicsEngine PRIVATE
