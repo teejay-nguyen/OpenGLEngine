@@ -1,6 +1,8 @@
 #include "Shader.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <glad/glad.h>
 
 Shader::Shader()
@@ -14,13 +16,22 @@ Shader::~Shader()
         glDeleteProgram(m_ID);
 }
 
-bool Shader::Create(const char* vertexShaderSource, const char* fragmentShaderSource)
+bool Shader::Create(const std::string& vertexPath, const std::string& fragmentPath)
 {
+    std::string vertexShaderSource = ReadFile(vertexPath);
+    std::string fragmentShaderSource = ReadFile(fragmentPath);
+
+    // Check if shader sources are empty
+    if (vertexShaderSource.empty() || fragmentShaderSource.empty())
+    {
+        return false;
+    }
+
     // Create shader program
     // Create vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-    if (!CompileShader(vertexShader, vertexShaderSource, "Vertex"))
+    if (!CompileShader(vertexShader, vertexShaderSource.c_str(), "Vertex"))
     {
         glDeleteShader(vertexShader);
         return false;
@@ -29,7 +40,7 @@ bool Shader::Create(const char* vertexShaderSource, const char* fragmentShaderSo
     // Create fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    if (!CompileShader(fragmentShader, fragmentShaderSource, "Fragment"))
+    if (!CompileShader(fragmentShader, fragmentShaderSource.c_str(), "Fragment"))
     {
         glDeleteShader(fragmentShader);
         glDeleteShader(vertexShader);
@@ -110,4 +121,19 @@ bool Shader::CompileShader(unsigned int shader,
     }
 
     return true;
+}
+
+std::string Shader::ReadFile(const std::string& path)
+{
+    std::ifstream file(path);
+
+    if (!file.is_open())
+    {
+        std::cerr << "Failed to open " << path << std::endl;
+        return "";
+    }
+
+    std::stringstream stream;
+    stream << file.rdbuf();
+    return stream.str();
 }

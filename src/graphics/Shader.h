@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Shader
 {
 public:
@@ -7,18 +9,21 @@ public:
     ~Shader();
 
     bool Create(
-        const char* vertexShaderSource,
-        const char* fragmentShaderSource
+        const std::string& vertexPath,
+        const std::string& fragmentPath
     );
 
     void Bind() const;
 
 private:
-    unsigned int m_ID = 0;
-
     bool CompileShader(
         unsigned int shader,
         const char* source,
         const char* shaderName
     );
+
+    std::string ReadFile(const std::string& path);
+
+private:
+    unsigned int m_ID = 0;
 };
