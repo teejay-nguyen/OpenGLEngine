@@ -12,7 +12,8 @@ void Application::Run()
 
     Renderer renderer;
 
-    renderer.Initialize();
+    if (!renderer.Initialize())
+        return;
 
     while (!window.ShouldClose())
     {

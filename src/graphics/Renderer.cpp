@@ -2,9 +2,24 @@
 
 #include <glad/glad.h>
 
-void Renderer::Initialize() 
+bool Renderer::Initialize() 
 {
-    
+    if (!m_Shader.Create(
+        "assets/shaders/basic.vert",
+        "assets/shaders/basic.frag"
+    ))
+    {
+        return false;
+    }
+
+    if (!m_Triangle.CreateTriangle())
+    {
+        return false;
+    }
+
+    glEnable(GL_DEPTH_TEST);
+
+    return true;
 }
 
 void Renderer::BeginFrame()
@@ -16,9 +31,16 @@ void Renderer::BeginFrame()
         1.0f
     );
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(
+        GL_COLOR_BUFFER_BIT |
+        GL_DEPTH_BUFFER_BIT
+    );
+
+    m_Shader.Bind();
+    m_Triangle.Draw();
 }
 
 void Renderer::EndFrame()
 {
+    
 }

@@ -2,11 +2,18 @@
 
 #include <glad/glad.h>
 
+Mesh::Mesh() = default;
+
 Mesh::~Mesh()
 {
     if (m_VBO != 0)
     {
         glDeleteBuffers(1, &m_VBO);
+    }
+
+    if (m_VAO != 0)
+    {
+        glDeleteVertexArrays(1, &m_VAO);
     }
 }
 
@@ -20,19 +27,23 @@ bool Mesh::CreateTriangle()
         0.0f, 0.5f, 0.0f
     };
 
-    // Generate VAO
+    // Generate and bind VAO
     glGenVertexArrays(1, &m_VAO);
+    glBindVertexArray(m_VAO);
 
-    // Bind VAO
-    glBindVertexArray(
-        m_VAO
-    );
+    // Generate and bind VBO
+    glGenBuffers(1, &m_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-    glBindBuffer(
+    // Set VBO data
+    glBufferData(
         GL_ARRAY_BUFFER,
-        m_VBO
+        sizeof(vertices),
+        vertices,
+        GL_STATIC_DRAW
     );
 
+    // Describe vertex layout
     glVertexAttribPointer(
         0,
         3,
@@ -44,33 +55,17 @@ bool Mesh::CreateTriangle()
 
     glEnableVertexAttribArray(0);
 
-    // Generate VBO
-    glGenBuffers(1, &m_VBO);
-
-    // Bind VBO
-    glBindBuffer(
-        GL_ARRAY_BUFFER,
-        m_VBO
-    );
-    
-    // Set VBO data
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(vertices),
-        vertices,
-        GL_STATIC_DRAW
-    );
-
-    // Unbind VBO
-    glBindBuffer(
-        GL_ARRAY_BUFFER,
-        0
-    );
-
-    // Unbind VAO
-    glBindVertexArray(
-        0
-    );
+    // Unbind VBO & VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     return true;
+}
+
+void Mesh::Draw() const
+{
+    // Bind VAO
+    glBindVertexArray(m_VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(0);
 }
