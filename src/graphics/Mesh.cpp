@@ -22,9 +22,10 @@ bool Mesh::CreateTriangle()
     // Vertex data
     float vertices[]
     {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        // Position          // Color
+        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // Red
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Green
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // Blue
     };
 
     // Generate and bind VAO
@@ -44,16 +45,29 @@ bool Mesh::CreateTriangle()
     );
 
     // Describe vertex layout
+    // Position attribute
     glVertexAttribPointer(
         0,
         3,
         GL_FLOAT,
         GL_FALSE,
-        3 * sizeof(float),
+        6 * sizeof(float),
         (void*)0
     );
 
     glEnableVertexAttribArray(0);
+
+    // Color attribute
+    glVertexAttribPointer(
+        1,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        6 * sizeof(float),
+        (void*)(3 * sizeof(float))
+    );
+
+    glEnableVertexAttribArray(1);
 
     // Unbind VBO & VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);

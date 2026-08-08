@@ -12,7 +12,7 @@ The goal of this project is not only to learn modern OpenGL, but also to design 
 - **Graphics API:** OpenGL 3.3 Core
 - **Windowing:** GLFW
 - **OpenGL Loader:** GLAD
-- **Math Library:** GLM *(future milestones)*
+- **Math Library:** GLM _(future milestones)_
 - **Build System:** CMake + Ninja
 - **Package Manager:** vcpkg
 
@@ -56,7 +56,12 @@ Application
 
 ### First Triangle (v0.1.0)
 
-![First Triangle](<img width="1288" height="794" alt="Screenshot 2026-08-03 151234" src="https://github.com/user-attachments/assets/f86e19cb-018d-4e4b-ad24-ece124cbbaca" />)
+<details>
+  <summary></summary>
+  
+  <img src="docs/images/First%20Triangle.png" width="400" alt="First Triangle">
+  
+</details>
 
 ---
 
