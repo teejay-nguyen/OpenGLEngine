@@ -3,6 +3,26 @@
 #include <glad/glad.h>
 #include <cstddef>
 
+namespace
+{
+    GLenum ToOpenGLPrimitive(PrimitiveType type)
+    {
+        switch (type)
+        {
+            case PrimitiveType::Points:
+                return GL_POINTS;
+
+            case PrimitiveType::Lines:
+                return GL_LINES;
+
+            case PrimitiveType::Triangles:
+                return GL_TRIANGLES;
+        }
+
+        return GL_TRIANGLES;
+    }
+}
+
 Mesh::Mesh() = default;
 
 Mesh::~Mesh()
@@ -18,7 +38,7 @@ Mesh::~Mesh()
     }
 }
 
-bool Mesh::Create(const std::vector<Vertex>& vertices)
+bool Mesh::Create(const std::vector<Vertex>& vertices, PrimitiveType primitiveType)
 {
     // Vertex data
     if (vertices.empty())
@@ -27,6 +47,9 @@ bool Mesh::Create(const std::vector<Vertex>& vertices)
     }
 
     m_VertexCount = static_cast<unsigned int>(vertices.size());
+
+    // Primitive type
+    m_PrimitiveType = primitiveType;
 
     // Generate and bind VAO
     glGenVertexArrays(1, &m_VAO);
@@ -82,10 +105,11 @@ void Mesh::Draw() const
     glBindVertexArray(m_VAO);
 
     glDrawArrays(
-        GL_TRIANGLES, 
+        ToOpenGLPrimitive(m_PrimitiveType), 
         0, 
         m_VertexCount
     );
 
     glBindVertexArray(0);
 }
+
