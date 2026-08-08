@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
 #include <glad/glad.h>
+#include <cstddef>
 
 Mesh::Mesh() = default;
 
@@ -20,12 +21,20 @@ Mesh::~Mesh()
 bool Mesh::CreateTriangle()
 {
     // Vertex data
-    float vertices[]
+    Vertex vertices[]
     {
-        // Position          // Color
-        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // Red
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Green
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // Blue
+        {
+            { -0.5f, -0.5f, 0.0f },
+            {  1.0f,  0.0f, 0.0f }
+        },
+        {
+            {  0.5f, -0.5f, 0.0f },
+            {  0.0f,  1.0f, 0.0f }
+        },
+        {
+            {  0.0f,  0.5f, 0.0f },
+            {  0.0f,  0.0f, 1.0f }
+        }
     };
 
     // Generate and bind VAO
@@ -51,8 +60,8 @@ bool Mesh::CreateTriangle()
         3,
         GL_FLOAT,
         GL_FALSE,
-        6 * sizeof(float),
-        (void*)0
+        sizeof(Vertex),
+        (void*)offsetof(Vertex, position)
     );
 
     glEnableVertexAttribArray(0);
@@ -63,8 +72,8 @@ bool Mesh::CreateTriangle()
         3,
         GL_FLOAT,
         GL_FALSE,
-        6 * sizeof(float),
-        (void*)(3 * sizeof(float))
+        sizeof(Vertex),
+        (void*)offsetof(Vertex, color)
     );
 
     glEnableVertexAttribArray(1);
