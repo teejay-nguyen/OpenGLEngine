@@ -4,6 +4,22 @@
 
 bool Renderer::Initialize() 
 {
+    std::vector<Vertex> vertices
+    {
+        {
+            { -0.5f, -0.5f, 0.0f },
+            {  1.0f,  0.0f, 0.0f }
+        },
+        {
+            {  0.5f, -0.5f, 0.0f },
+            {  0.0f,  1.0f, 0.0f }
+        },
+        {
+            {  0.0f,  0.5f, 0.0f },
+            {  0.0f,  0.0f, 1.0f }
+        }
+    };
+
     if (!m_Shader.Create(
         "assets/shaders/basic.vert",
         "assets/shaders/basic.frag"
@@ -12,7 +28,7 @@ bool Renderer::Initialize()
         return false;
     }
 
-    if (!m_Triangle.CreateTriangle())
+    if (!m_Triangle.Create(vertices))
     {
         return false;
     }

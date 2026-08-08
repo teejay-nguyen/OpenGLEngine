@@ -18,24 +18,15 @@ Mesh::~Mesh()
     }
 }
 
-bool Mesh::CreateTriangle()
+bool Mesh::Create(const std::vector<Vertex>& vertices)
 {
     // Vertex data
-    Vertex vertices[]
+    if (vertices.empty())
     {
-        {
-            { -0.5f, -0.5f, 0.0f },
-            {  1.0f,  0.0f, 0.0f }
-        },
-        {
-            {  0.5f, -0.5f, 0.0f },
-            {  0.0f,  1.0f, 0.0f }
-        },
-        {
-            {  0.0f,  0.5f, 0.0f },
-            {  0.0f,  0.0f, 1.0f }
-        }
-    };
+        return false;
+    }
+
+    m_VertexCount = static_cast<unsigned int>(vertices.size());
 
     // Generate and bind VAO
     glGenVertexArrays(1, &m_VAO);
@@ -48,8 +39,8 @@ bool Mesh::CreateTriangle()
     // Set VBO data
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(vertices),
-        vertices,
+        vertices.size() * sizeof(Vertex),
+        vertices.data(),
         GL_STATIC_DRAW
     );
 
@@ -89,6 +80,12 @@ void Mesh::Draw() const
 {
     // Bind VAO
     glBindVertexArray(m_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDrawArrays(
+        GL_TRIANGLES, 
+        0, 
+        m_VertexCount
+    );
+
     glBindVertexArray(0);
 }
