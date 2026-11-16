@@ -76,7 +76,7 @@ Application
 - [x] Render first triangle
 - [x] Vertex colors
 - [x] Engineering cleanup (vcpkg manifest, move-only GPU resources, GL debug output)
-- [ ] Index buffers (EBOs)
+- [x] Index buffers (EBOs)
 - [ ] Shader uniforms + transform system
 - [ ] Orbit camera
 - [ ] Normals + basic lighting

@@ -20,5 +20,5 @@ public:
 private:
     Shader m_Shader;
 
-    Mesh m_Triangle;
+    Mesh m_Quad;
 };

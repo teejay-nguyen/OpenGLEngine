@@ -49,20 +49,21 @@ bool Renderer::Initialize()
 {
     EnableDebugOutput();
 
+    // A quad: 4 unique vertices shared by 2 triangles via 6 indices.
+    // Without an index buffer this would need 6 vertices (2 duplicated).
     std::vector<Vertex> vertices
     {
-        {
-            { -0.5f, -0.5f, 0.0f },
-            {  1.0f,  0.0f, 0.0f }
-        },
-        {
-            {  0.5f, -0.5f, 0.0f },
-            {  0.0f,  1.0f, 0.0f }
-        },
-        {
-            {  0.0f,  0.5f, 0.0f },
-            {  0.0f,  0.0f, 1.0f }
-        }
+        { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } }, // 0: bottom-left  (red)
+        { {  0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } }, // 1: bottom-right (green)
+        { {  0.5f,  0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } }, // 2: top-right    (blue)
+        { { -0.5f,  0.5f, 0.0f }, { 1.0f, 1.0f, 0.0f } }  // 3: top-left     (yellow)
+    };
+
+    // Counter-clockwise winding (OpenGL's default front face)
+    std::vector<std::uint32_t> indices
+    {
+        0, 1, 2,
+        2, 3, 0
     };
 
     if (!m_Shader.Create(
@@ -73,7 +74,7 @@ bool Renderer::Initialize()
         return false;
     }
 
-    if (!m_Triangle.Create(vertices))
+    if (!m_Quad.Create(vertices, indices))
     {
         return false;
     }
@@ -101,7 +102,7 @@ void Renderer::BeginFrame()
 void Renderer::Render()
 {
     m_Shader.Bind();
-    m_Triangle.Draw();
+    m_Quad.Draw();
 }
 
 void Renderer::EndFrame()
