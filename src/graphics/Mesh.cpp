@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <cstddef>
+#include <utility>
 
 namespace
 {
@@ -27,15 +28,47 @@ Mesh::Mesh() = default;
 
 Mesh::~Mesh()
 {
+    Release();
+}
+
+Mesh::Mesh(Mesh&& other) noexcept
+    : m_VAO(std::exchange(other.m_VAO, 0))
+    , m_VBO(std::exchange(other.m_VBO, 0))
+    , m_VertexCount(std::exchange(other.m_VertexCount, 0))
+    , m_PrimitiveType(other.m_PrimitiveType)
+{
+}
+
+Mesh& Mesh::operator=(Mesh&& other) noexcept
+{
+    if (this != &other)
+    {
+        Release();
+
+        m_VAO = std::exchange(other.m_VAO, 0);
+        m_VBO = std::exchange(other.m_VBO, 0);
+        m_VertexCount = std::exchange(other.m_VertexCount, 0);
+        m_PrimitiveType = other.m_PrimitiveType;
+    }
+
+    return *this;
+}
+
+void Mesh::Release()
+{
     if (m_VBO != 0)
     {
         glDeleteBuffers(1, &m_VBO);
+        m_VBO = 0;
     }
 
     if (m_VAO != 0)
     {
         glDeleteVertexArrays(1, &m_VAO);
+        m_VAO = 0;
     }
+
+    m_VertexCount = 0;
 }
 
 bool Mesh::Create(const std::vector<Vertex>& vertices, PrimitiveType primitiveType)
@@ -45,6 +78,9 @@ bool Mesh::Create(const std::vector<Vertex>& vertices, PrimitiveType primitiveTy
     {
         return false;
     }
+
+    // Allow re-creating a mesh without leaking the previous GPU buffers
+    Release();
 
     m_VertexCount = static_cast<unsigned int>(vertices.size());
 

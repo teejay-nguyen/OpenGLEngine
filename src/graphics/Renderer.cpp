@@ -2,7 +2,8 @@
 
 #include <glad/glad.h>
 
-bool Renderer::Initialize() 
+
+bool Renderer::Initialize()
 {
     std::vector<Vertex> vertices
     {
@@ -51,12 +52,15 @@ void Renderer::BeginFrame()
         GL_COLOR_BUFFER_BIT |
         GL_DEPTH_BUFFER_BIT
     );
+}
 
+void Renderer::Render()
+{
     m_Shader.Bind();
     m_Triangle.Draw();
 }
 
 void Renderer::EndFrame()
 {
-    
+
 }

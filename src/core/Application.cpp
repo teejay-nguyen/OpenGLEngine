@@ -18,9 +18,10 @@ void Application::Run()
     while (!window.ShouldClose())
     {
         renderer.BeginFrame();
-
-        window.Update();
-
+        renderer.Render();
         renderer.EndFrame();
+
+        // present the frame and poll events
+        window.Update();
     }
 }

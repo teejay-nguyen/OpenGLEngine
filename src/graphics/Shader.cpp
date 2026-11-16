@@ -3,17 +3,39 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <utility>
 #include <glad/glad.h>
 
-Shader::Shader()
-{
-
-}
+Shader::Shader() = default;
 
 Shader::~Shader()
 {
+    Release();
+}
+
+Shader::Shader(Shader&& other) noexcept
+    : m_ID(std::exchange(other.m_ID, 0))
+{
+}
+
+Shader& Shader::operator=(Shader&& other) noexcept
+{
+    if (this != &other)
+    {
+        Release();
+        m_ID = std::exchange(other.m_ID, 0);
+    }
+
+    return *this;
+}
+
+void Shader::Release()
+{
     if (m_ID != 0)
+    {
         glDeleteProgram(m_ID);
+        m_ID = 0;
+    }
 }
 
 bool Shader::Create(const std::string& vertexPath, const std::string& fragmentPath)
@@ -27,7 +49,9 @@ bool Shader::Create(const std::string& vertexPath, const std::string& fragmentPa
         return false;
     }
 
-    // Create shader program
+    // Allow re-creating a shader without leaking the previous program
+    Release();
+
     // Create vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
