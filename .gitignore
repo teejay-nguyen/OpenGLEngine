@@ -12,7 +12,9 @@ CMakeFiles/
 cmake-build-*/
 
 # Compiled files
+# (*.obj is MSVC object output - but OBJ is also a 3D model format, so keep model assets)
 *.obj
+!assets/**/*.obj
 *.exe
 *.pdb
 *.ilk
@@ -22,6 +24,9 @@ cmake-build-*/
 # User files
 *.user
 *.suo
+
+# vcpkg manifest mode
+/vcpkg_installed/
 
 # Misc
 .DS_Store
