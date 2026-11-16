@@ -5,6 +5,7 @@
 #include <sstream>
 #include <utility>
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader() = default;
 
@@ -15,6 +16,7 @@ Shader::~Shader()
 
 Shader::Shader(Shader&& other) noexcept
     : m_ID(std::exchange(other.m_ID, 0))
+    , m_UniformLocations(std::move(other.m_UniformLocations))
 {
 }
 
@@ -24,6 +26,7 @@ Shader& Shader::operator=(Shader&& other) noexcept
     {
         Release();
         m_ID = std::exchange(other.m_ID, 0);
+        m_UniformLocations = std::move(other.m_UniformLocations);
     }
 
     return *this;
@@ -36,6 +39,9 @@ void Shader::Release()
         glDeleteProgram(m_ID);
         m_ID = 0;
     }
+
+    // cached locations belong to the old program
+    m_UniformLocations.clear();
 }
 
 bool Shader::Create(const std::string& vertexPath, const std::string& fragmentPath)
@@ -117,6 +123,54 @@ bool Shader::Create(const std::string& vertexPath, const std::string& fragmentPa
 void Shader::Bind() const
 {
     glUseProgram(m_ID);
+}
+
+void Shader::SetInt(const std::string& name, int value) const
+{
+    glProgramUniform1i(m_ID, GetUniformLocation(name), value);
+}
+
+void Shader::SetFloat(const std::string& name, float value) const
+{
+    glProgramUniform1f(m_ID, GetUniformLocation(name), value);
+}
+
+void Shader::SetVec3(const std::string& name, const glm::vec3& value) const
+{
+    glProgramUniform3fv(m_ID, GetUniformLocation(name), 1, glm::value_ptr(value));
+}
+
+void Shader::SetVec4(const std::string& name, const glm::vec4& value) const
+{
+    glProgramUniform4fv(m_ID, GetUniformLocation(name), 1, glm::value_ptr(value));
+}
+
+void Shader::SetMat4(const std::string& name, const glm::mat4& value) const
+{
+    // GLM matrices are column-major like OpenGL's, so no transpose is needed
+    glProgramUniformMatrix4fv(m_ID, GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+int Shader::GetUniformLocation(const std::string& name) const
+{
+    auto it = m_UniformLocations.find(name);
+
+    if (it != m_UniformLocations.end())
+    {
+        return it->second;
+    }
+
+    int location = glGetUniformLocation(m_ID, name.c_str());
+
+    // Setting location -1 is a silent no-op in OpenGL, so warn (once, thanks to the cache).
+    if (location == -1)
+    {
+        std::cerr << "Warning: uniform '" << name << "' not found in shader program "
+                  << m_ID << " (missing or unused in GLSL)" << std::endl;
+    }
+
+    m_UniformLocations.emplace(name, location);
+    return location;
 }
 
 bool Shader::CompileShader(unsigned int shader, 

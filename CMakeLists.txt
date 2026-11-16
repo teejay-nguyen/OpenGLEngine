@@ -18,6 +18,8 @@ add_executable(GraphicsEngine
     src/graphics/Shader.cpp
     src/graphics/Mesh.cpp
 
+    src/scene/Transform.cpp
+
     external/glad/src/glad.c
 )
 

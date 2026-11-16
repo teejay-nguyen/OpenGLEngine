@@ -98,6 +98,11 @@ float Window::GetAspectRatio() const
     return static_cast<float>(m_Width) / static_cast<float>(m_Height);
 }
 
+double Window::GetTime() const
+{
+    return glfwGetTime();
+}
+
 void Window::ProcessInput()
 {
     if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

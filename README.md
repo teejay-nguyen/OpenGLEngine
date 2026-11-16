@@ -77,7 +77,7 @@ Application
 - [x] Vertex colors
 - [x] Engineering cleanup (vcpkg manifest, move-only GPU resources, GL debug output)
 - [x] Index buffers (EBOs)
-- [ ] Shader uniforms + transform system
+- [x] Shader uniforms + transform system
 - [ ] Orbit camera
 - [ ] Normals + basic lighting
 - [ ] CPU mesh data / GPU mesh split, Model class

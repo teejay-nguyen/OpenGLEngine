@@ -23,6 +23,9 @@ public:
     int GetHeight() const { return m_Height; }
     float GetAspectRatio() const;
 
+    // seconds since the window system was initialized
+    double GetTime() const;
+
 private:
     void ProcessInput();
 
