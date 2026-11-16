@@ -9,12 +9,12 @@ The goal of this project is not only to learn modern OpenGL, but also to design 
 ## Tech Stack
 
 - **Language:** C++20
-- **Graphics API:** OpenGL 3.3 Core
+- **Graphics API:** OpenGL 4.6 Core
 - **Windowing:** GLFW
 - **OpenGL Loader:** GLAD
-- **Math Library:** GLM _(future milestones)_
+- **Math Library:** GLM
 - **Build System:** CMake + Ninja
-- **Package Manager:** vcpkg
+- **Package Manager:** vcpkg (manifest mode, see `vcpkg.json`)
 
 ---
 
@@ -67,20 +67,32 @@ Application
 
 ## Planned Roadmap
 
+**MVP goal:** load multiple 3D models (OBJ, STL) into a scene, with lighting and textures.
+
 - [x] Window creation
 - [x] OpenGL initialization
 - [x] Shader abstraction
 - [x] Mesh abstraction
 - [x] Render first triangle
-- [ ] Vertex colors
+- [x] Vertex colors
+- [x] Engineering cleanup (vcpkg manifest, move-only GPU resources, GL debug output)
 - [ ] Index buffers (EBOs)
-- [ ] Transform system
-- [ ] Camera
-- [ ] Texture loading
-- [ ] Model loading
-- [ ] Lighting
-- [ ] Scene graph
+- [ ] Shader uniforms + transform system
+- [ ] Orbit camera
+- [ ] Normals + basic lighting
+- [ ] CPU mesh data / GPU mesh split, Model class
+- [ ] OBJ loader (hand-written)
+- [ ] STL loader (hand-written, ASCII + binary)
+- [ ] Auto-framing (bounding boxes, camera fit, up-axis)
+- [ ] Multiple models in a scene
+- [ ] Texture loading + OBJ materials (.mtl)
+- [ ] File loading UX (command line, drag-and-drop)
 - [ ] Engine MVP
+
+### Post-MVP
+
+- [ ] Dear ImGui editor UI (file browser, scene panel)
+- [ ] Scene graph
 
 ---
 
@@ -96,11 +108,14 @@ Application
 ### Clone
 
 ```bash
-git clone <repo-url>
+git clone --recursive <repo-url>
 cd GraphicsEngine
+./vcpkg/bootstrap-vcpkg.bat
 ```
 
 ### Configure
+
+Dependencies (GLFW, GLM) are installed automatically from `vcpkg.json` on first configure.
 
 ```bash
 cmake --preset default
@@ -113,6 +128,8 @@ cmake --build --preset default
 ```
 
 ### Run
+
+Run from the repository root so `assets/` paths resolve:
 
 ```bash
 ./build/GraphicsEngine.exe

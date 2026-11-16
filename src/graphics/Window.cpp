@@ -39,6 +39,11 @@ bool Window::Create(int width, int height, const char* title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifndef NDEBUG
+    // debug contexts report errors through glDebugMessageCallback (see Renderer)
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+
     // window creation
     m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
