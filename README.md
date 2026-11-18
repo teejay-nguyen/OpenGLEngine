@@ -78,7 +78,7 @@ Application
 - [x] Engineering cleanup (vcpkg manifest, move-only GPU resources, GL debug output)
 - [x] Index buffers (EBOs)
 - [x] Shader uniforms + transform system
-- [ ] Orbit camera
+- [x] Orbit camera (left drag: orbit, right/middle drag: pan, scroll: zoom, R: reset)
 - [ ] Normals + basic lighting
 - [ ] CPU mesh data / GPU mesh split, Model class
 - [ ] OBJ loader (hand-written)

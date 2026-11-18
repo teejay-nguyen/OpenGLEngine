@@ -19,6 +19,7 @@ add_executable(GraphicsEngine
     src/graphics/Mesh.cpp
 
     src/scene/Transform.cpp
+    src/scene/OrbitCamera.cpp
 
     external/glad/src/glad.c
 )

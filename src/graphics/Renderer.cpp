@@ -95,6 +95,15 @@ bool Renderer::Initialize()
     m_CubeTransforms[1].position = { 0.9f, 0.0f, 0.0f };
     m_CubeTransforms[1].scale = glm::vec3(0.6f);
 
+    // Rest the cubes on the ground grid (unit cube is centered, so lift by half its size)
+    m_CubeTransforms[0].position.y = 0.5f;
+    m_CubeTransforms[1].position.y = 0.3f;
+
+    if (!CreateGrid(10, 1.0f))
+    {
+        return false;
+    }
+
     glEnable(GL_DEPTH_TEST);
 
     // Skip triangles facing away from the camera (half the cube's faces at any time)
@@ -109,11 +118,40 @@ void Renderer::Update(float deltaTime)
 {
     // Rotation speeds in degrees per second; scaling by deltaTime keeps the
     // motion independent of frame rate.
-    m_CubeTransforms[0].rotation.y += 45.0f * deltaTime;
-    m_CubeTransforms[0].rotation.x += 20.0f * deltaTime;
-
-    m_CubeTransforms[1].rotation.z -= 90.0f * deltaTime;
+    // Only the small cube spins; a static scene makes the camera motion easy to judge.
     m_CubeTransforms[1].rotation.y += 30.0f * deltaTime;
+}
+
+bool Renderer::CreateGrid(int halfExtent, float spacing)
+{
+    // A flat grid on the XZ plane (y = 0), drawn as GL_LINES: every pair of
+    // vertices is one line segment. The center lines are colored as axes:
+    // X = red, Z = blue (Y is "up" and does not lie in the grid).
+    const glm::vec3 lineColor { 0.35f, 0.38f, 0.42f };
+    const glm::vec3 xAxisColor { 0.85f, 0.25f, 0.25f };
+    const glm::vec3 zAxisColor { 0.25f, 0.45f, 0.90f };
+
+    const float extent = static_cast<float>(halfExtent) * spacing;
+
+    std::vector<Vertex> vertices;
+    vertices.reserve(static_cast<std::size_t>(halfExtent * 2 + 1) * 4);
+
+    for (int i = -halfExtent; i <= halfExtent; ++i)
+    {
+        const float offset = static_cast<float>(i) * spacing;
+
+        // line parallel to X (constant z); the one at z = 0 is the X axis
+        const glm::vec3 xColor = (i == 0) ? xAxisColor : lineColor;
+        vertices.push_back({ { -extent, 0.0f, offset }, xColor });
+        vertices.push_back({ {  extent, 0.0f, offset }, xColor });
+
+        // line parallel to Z (constant x); the one at x = 0 is the Z axis
+        const glm::vec3 zColor = (i == 0) ? zAxisColor : lineColor;
+        vertices.push_back({ { offset, 0.0f, -extent }, zColor });
+        vertices.push_back({ { offset, 0.0f,  extent }, zColor });
+    }
+
+    return m_Grid.Create(vertices, PrimitiveType::Lines);
 }
 
 void Renderer::BeginFrame()
@@ -131,27 +169,17 @@ void Renderer::BeginFrame()
     );
 }
 
-void Renderer::Render(float aspectRatio)
+void Renderer::Render(const OrbitCamera& camera, float aspectRatio)
 {
-    // Fixed camera for now; milestone 3 replaces this with an orbit camera.
-    const glm::mat4 view = glm::lookAt(
-        glm::vec3(0.0f, 1.5f, 4.0f), // eye
-        glm::vec3(0.0f, 0.0f, 0.0f), // target
-        glm::vec3(0.0f, 1.0f, 0.0f)  // up
-    );
-
-    const glm::mat4 projection = glm::perspective(
-        glm::radians(45.0f), // vertical field of view
-        aspectRatio,
-        0.1f,                // near plane
-        100.0f               // far plane
-    );
-
     // Per-frame uniforms: shared by every object
-    m_Shader.SetMat4("uView", view);
-    m_Shader.SetMat4("uProjection", projection);
+    m_Shader.SetMat4("uView", camera.GetViewMatrix());
+    m_Shader.SetMat4("uProjection", camera.GetProjectionMatrix(aspectRatio));
 
     m_Shader.Bind();
+
+    // Grid lives at the world origin, so its model matrix is identity
+    m_Shader.SetMat4("uModel", glm::mat4(1.0f));
+    m_Grid.Draw();
 
     // Per-object uniform: only the model matrix changes between draws
     for (const Transform& transform : m_CubeTransforms)
